@@ -1,0 +1,187 @@
+/* Lustro rentgenowskie: jasny interfejs. Górny pasek ze źródłem i zapisem, po lewej szyna zakładek i panel jednej
+   zakładki naraz, reszta to scena z obrazem, na dole pasek stanu śledzenia. */
+:root {
+  --tlo: #e6eae7;
+  --papier: #ffffff;
+  --pole: #f0f3f1;
+  --atrament: #101514;
+  --szary: #5c6663;
+  --linia: #ccd3cf;
+  --akcent: #008f6b;
+  --akcentJasny: #d5f0e7;
+  --czerwien: #de3b2f;
+  --scena: #090a0a;
+}
+* { box-sizing: border-box; }
+[hidden] { display: none !important; }
+html, body { height: 100%; margin: 0; }
+body {
+  background: var(--tlo);
+  color: var(--atrament);
+  font: 15px/1.4 "Avenir Next", Avenir, "Segoe UI", system-ui, sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+button, select, input { font: inherit; color: inherit; }
+button { -webkit-tap-highlight-color: transparent; }
+#aplikacja {
+  display: grid;
+  grid-template-columns: 92px 348px minmax(0, 1fr);
+  grid-template-rows: auto minmax(0, 1fr) auto;
+  height: 100vh;
+}
+#aplikacja.bezPanelu { grid-template-columns: 92px 0 minmax(0, 1fr); }
+#aplikacja.bezPanelu #panel { display: none; }
+.rozporka { flex: 1; }
+
+/* ---------- górny pasek ---------- */
+#gora {
+  grid-column: 1 / -1;
+  display: flex; align-items: center; flex-wrap: wrap; gap: 10px 22px;
+  padding: 10px 18px; background: var(--papier); border-bottom: 2px solid var(--atrament);
+}
+.marka { font-size: 17px; letter-spacing: -0.01em; display: flex; align-items: center; gap: 7px; white-space: nowrap; }
+.marka i { width: 16px; height: 16px; border-radius: 50%; border: 4px solid var(--akcent); display: inline-block; }
+.marka b { font-weight: 700; }
+.grupa { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+.grupa.prawa { margin-left: auto; }
+.podpis { font-size: 12px; color: var(--szary); font-weight: 600; }
+.pigulka {
+  background: var(--papier); border: 1.5px solid var(--atrament); border-radius: 999px;
+  padding: 6px 15px; font-weight: 600; font-size: 14px; cursor: pointer; white-space: nowrap;
+}
+.pigulka:hover { background: var(--pole); }
+.pigulka.wybrany { background: var(--atrament); color: var(--papier); }
+.pigulka:disabled { opacity: 0.4; cursor: default; }
+.pigulka.nagraj { border-color: var(--czerwien); color: var(--czerwien); }
+.pigulka.nagraj::before { content: ""; display: inline-block; width: 9px; height: 9px; border-radius: 50%; background: var(--czerwien); margin-right: 7px; }
+.pigulka.nagraj.trwa { background: var(--czerwien); color: #fff; }
+.pigulka.nagraj.trwa::before { background: #fff; border-radius: 2px; }
+select { background: var(--pole); border: 1.5px solid var(--linia); border-radius: 999px; padding: 6px 10px; max-width: 170px; cursor: pointer; }
+#sterowaniePliku { display: inline-flex; align-items: center; gap: 8px; }
+#suwakCzasu { width: 200px; }
+#czasNagrania { color: var(--szary); font-size: 13px; font-variant-numeric: tabular-nums; }
+
+/* ---------- szyna zakładek ---------- */
+#zakladki { grid-row: 2; background: var(--atrament); display: flex; flex-direction: column; gap: 2px; padding: 10px 6px; overflow-y: auto; }
+#zakladki button {
+  background: none; border: none; color: #aeb8b4; display: flex; flex-direction: column; align-items: center; gap: 4px;
+  padding: 9px 2px; border-radius: 12px; font-size: 11.5px; font-weight: 600; cursor: pointer; line-height: 1.15; text-align: center;
+}
+#zakladki svg { width: 24px; height: 24px; fill: none; stroke: currentColor; stroke-width: 1.7; stroke-linecap: round; stroke-linejoin: round; }
+#zakladki button:hover { color: #fff; }
+#zakladki button.wybrany { background: var(--akcent); color: #fff; }
+
+/* ---------- panel jednej zakładki ---------- */
+#panel { grid-row: 2; background: var(--papier); border-right: 1px solid var(--linia); overflow-y: auto; padding: 20px 20px 28px; }
+#panel h2 { font-size: 22px; font-weight: 700; letter-spacing: -0.02em; margin: 0 0 4px; }
+#panel h3 { font-size: 13px; font-weight: 700; margin: 22px 0 9px; padding-top: 14px; border-top: 1px solid var(--linia); }
+.opis { color: var(--szary); font-size: 13px; margin: 0 0 14px; }
+h3 + .opis { margin-top: -3px; }
+.suwak + .opis, .przelacz + .opis, .segment + .opis, button + .opis { margin-top: 12px; }
+.kafle { display: grid; gap: 8px; }
+.kafle.dwa { grid-template-columns: 1fr 1fr; }
+.kafel { display: block; }
+.kafel input, .przelacz input { position: absolute; opacity: 0; pointer-events: none; }
+.kafel span, .kafle > button {
+  display: flex; align-items: center; gap: 9px; min-height: 46px; padding: 8px 12px; width: 100%;
+  background: var(--pole); border: 1.5px solid transparent; border-radius: 12px; font-weight: 600; font-size: 14px; cursor: pointer; text-align: left;
+}
+.kafel span i { width: 16px; height: 16px; border-radius: 5px; background: var(--k); flex: none; box-shadow: inset 0 0 0 1.5px rgba(16, 21, 20, 0.25); }
+.kafel span:hover, .kafle > button:hover { border-color: var(--atrament); }
+.kafel input:checked + span, .kafle > button.wybrany { background: var(--atrament); color: var(--papier); }
+.kafel input:focus-visible + span { outline: 2px solid var(--akcent); outline-offset: 2px; }
+.rzad { display: flex; flex-wrap: wrap; gap: 7px; }
+button.maly { background: var(--papier); border: 1.5px solid var(--linia); border-radius: 999px; padding: 5px 13px; font-size: 13px; font-weight: 600; cursor: pointer; }
+button.maly:hover { border-color: var(--atrament); }
+button.maly.wybrany { background: var(--atrament); border-color: var(--atrament); color: var(--papier); }
+.segment { display: grid; grid-template-columns: 1fr 1fr; background: var(--pole); border-radius: 999px; padding: 4px; gap: 4px; }
+.segment.trzy { grid-template-columns: 1fr 1fr 1fr; }
+.segment button { background: none; border: none; border-radius: 999px; padding: 8px 6px; font-weight: 600; font-size: 13.5px; cursor: pointer; }
+.segment button:hover { background: var(--linia); }
+.segment button.wybrany { background: var(--akcent); color: #fff; }
+.suwak { display: grid; grid-template-columns: 1fr auto; align-items: baseline; gap: 2px 8px; margin: 16px 0 0; font-size: 14px; font-weight: 600; }
+.suwak output { font: 600 13px ui-monospace, "SF Mono", Menlo, monospace; color: var(--akcent); }
+.suwak input { grid-column: 1 / -1; }
+input[type="range"] { -webkit-appearance: none; appearance: none; width: 100%; height: 22px; background: none; margin: 0; cursor: pointer; }
+input[type="range"]::-webkit-slider-runnable-track { height: 6px; border-radius: 3px; background: var(--linia); }
+input[type="range"]::-webkit-slider-thumb { -webkit-appearance: none; width: 20px; height: 20px; border-radius: 50%; background: var(--papier); border: 5px solid var(--akcent); margin-top: -7px; }
+input[type="range"]::-moz-range-track { height: 6px; border-radius: 3px; background: var(--linia); }
+input[type="range"]::-moz-range-thumb { width: 12px; height: 12px; border-radius: 50%; background: var(--papier); border: 5px solid var(--akcent); }
+.przelacz { display: flex; align-items: flex-start; gap: 11px; margin: 14px 0 0; font-size: 14px; font-weight: 600; cursor: pointer; }
+.przelacz i { flex: none; width: 42px; height: 24px; border-radius: 999px; background: var(--linia); position: relative; transition: background 0.15s; margin-top: -1px; }
+.przelacz i::after { content: ""; position: absolute; left: 3px; top: 3px; width: 18px; height: 18px; border-radius: 50%; background: var(--papier); transition: transform 0.15s; }
+.przelacz input:checked + i { background: var(--akcent); }
+.przelacz input:checked + i::after { transform: translateX(18px); }
+.przelacz input:focus-visible + i { outline: 2px solid var(--atrament); outline-offset: 2px; }
+
+/* części ciała */
+.czesci { display: grid; grid-template-columns: 150px 1fr; gap: 16px; align-items: start; }
+#sylwetka { width: 150px; display: block; }
+#sylwetka.lustro { transform: scaleX(-1); }
+#sylwetka [data-czesc] { fill: var(--pole); stroke: var(--atrament); stroke-width: 1.5; cursor: pointer; }
+#sylwetka.cale [data-czesc] { fill: #b9c4bf; }
+#sylwetka [data-czesc]:hover { fill: var(--akcentJasny); }
+#sylwetka [data-czesc].wybrana { fill: var(--akcent); }
+.strony { display: flex; justify-content: space-between; color: var(--szary); font-size: 11.5px; font-weight: 600; margin-top: 5px; }
+.kolumna { display: flex; flex-direction: column; gap: 7px; }
+.kolumna button { text-align: left; }
+#czesciOpis { margin-top: 16px; }
+
+pre#daneTekst { background: var(--atrament); color: #d6e2dd; border-radius: 12px; padding: 12px 13px; font: 11.5px/1.55 ui-monospace, "SF Mono", Menlo, monospace; white-space: pre-wrap; margin: 12px 0 0; }
+.skroty { display: grid; grid-template-columns: auto 1fr; gap: 6px 12px; margin: 0; font-size: 13px; }
+.skroty dt { font: 600 12px ui-monospace, "SF Mono", Menlo, monospace; background: var(--pole); border-radius: 6px; padding: 2px 7px; justify-self: start; }
+.skroty dd { margin: 0; color: var(--szary); }
+
+/* ---------- scena ---------- */
+#okno { grid-row: 2; min-width: 0; min-height: 0; padding: 18px; display: flex; }
+#ramka { position: relative; flex: 1; min-height: 0; display: flex; align-items: center; justify-content: center; background: var(--scena); border-radius: 22px; overflow: hidden; }
+#ramka:fullscreen { border-radius: 0; }
+#plotno { max-width: 100%; max-height: 100%; display: block; }
+#start { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; padding: 20px; }
+.startKarta { background: var(--papier); border-radius: 22px; padding: 30px 32px 22px; max-width: 480px; }
+.startKarta h1 { font-size: 30px; line-height: 1.12; letter-spacing: -0.025em; margin: 0 0 10px; font-weight: 700; }
+.startKarta p { color: var(--szary); margin: 0 0 18px; }
+button.glowny { background: var(--akcent); color: #fff; border: none; border-radius: 999px; padding: 11px 22px; font-weight: 700; cursor: pointer; }
+button.glowny:hover { filter: brightness(0.93); }
+button.drugi { background: var(--papier); border: 1.5px solid var(--atrament); border-radius: 999px; padding: 10px 20px; font-weight: 700; cursor: pointer; }
+button.drugi:hover { background: var(--pole); }
+button.lacze { background: none; border: none; padding: 0; margin-top: 16px; color: var(--akcent); font-weight: 600; text-decoration: underline; cursor: pointer; font-size: 14px; }
+.startKarta #stan { margin: 10px 0 0; min-height: 1.3em; font-size: 13px; }
+#komunikat, #podpowiedz {
+  position: absolute; left: 50%; top: 16px; transform: translateX(-50%); max-width: min(720px, 90%);
+  background: var(--papier); color: var(--atrament); border-radius: 14px; padding: 10px 16px; font-size: 14px; font-weight: 600;
+  text-align: center; z-index: 3; box-shadow: 0 6px 24px rgba(0, 0, 0, 0.35);
+}
+#komunikat { border-left: 6px solid var(--czerwien); }
+#podpowiedz { top: auto; bottom: 18px; border-left: 6px solid var(--akcent); }
+#licznik {
+  position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; z-index: 5; pointer-events: none;
+  font-size: 220px; font-weight: 700; color: #fff; text-shadow: 0 4px 40px rgba(0, 0, 0, 0.6);
+}
+#test {
+  position: absolute; left: 50%; bottom: 18px; transform: translateX(-50%); width: min(820px, 92%);
+  background: var(--papier); border-radius: 18px; padding: 16px 20px 14px; z-index: 4; box-shadow: 0 8px 30px rgba(0, 0, 0, 0.4);
+}
+#testKrok { color: var(--akcent); font-size: 12.5px; font-weight: 700; margin-bottom: 4px; }
+#testTekst { font-size: 23px; line-height: 1.25; font-weight: 600; letter-spacing: -0.01em; }
+#testPasek { height: 6px; background: var(--linia); border-radius: 3px; margin: 13px 0 11px; overflow: hidden; }
+#testPasek i { display: block; height: 100%; width: 0; background: var(--akcent); }
+
+/* ---------- pasek stanu ---------- */
+#stopka {
+  grid-column: 1 / -1; display: flex; align-items: center; gap: 16px; padding: 7px 18px;
+  background: var(--papier); border-top: 1px solid var(--linia); font-size: 12.5px; color: var(--szary); font-weight: 600;
+}
+.lampka::before { content: ""; display: inline-block; width: 9px; height: 9px; border-radius: 50%; background: var(--linia); margin-right: 6px; }
+.lampka.jest { color: var(--atrament); }
+.lampka.jest::before { background: var(--akcent); }
+#stTempo { font-family: ui-monospace, "SF Mono", Menlo, monospace; font-weight: 500; }
+
+@media (max-width: 920px) {
+  #aplikacja { grid-template-columns: 76px 292px minmax(0, 1fr); }
+  #aplikacja.bezPanelu { grid-template-columns: 76px 0 minmax(0, 1fr); }
+  #zakladki button { font-size: 10.5px; }
+  #panel { padding: 16px 14px 24px; }
+  .czesci { grid-template-columns: 120px 1fr; gap: 10px; }
+  #sylwetka { width: 120px; }
+}

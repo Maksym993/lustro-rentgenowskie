@@ -1,0 +1,250 @@
+<!doctype html>
+<html lang="pl">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Lustro rentgenowskie</title>
+    <link rel="stylesheet" href="/src/styl.css" />
+  </head>
+  <body>
+    <div id="aplikacja">
+      <header id="gora">
+        <div class="marka"><i></i><b>Lustro</b> rentgenowskie</div>
+        <div class="grupa">
+          <span class="podpis">Źródło</span>
+          <button id="btnKamera" class="pigulka">Kamera</button>
+          <select id="wyborKamery" title="Wybór kamery" hidden></select>
+          <button id="btnPlik" class="pigulka">Nagranie z pliku</button>
+          <input id="plik" type="file" accept="video/*" hidden />
+          <button id="btnStop" class="pigulka" hidden title="Zatrzymuje obraz z kamery na bieżącej klatce (spacja)">Stopklatka</button>
+          <span id="sterowaniePliku" hidden>
+            <button id="btnGraj" class="pigulka" title="Spacja">Pauza</button>
+            <input id="suwakCzasu" type="range" min="0" max="1000" value="0" />
+          </span>
+        </div>
+        <div class="grupa prawa">
+          <span id="czasNagrania"></span>
+          <button id="btnZdjecie" class="pigulka" title="Zapisuje bieżący obraz jako PNG (S)">Zdjęcie</button>
+          <button id="btnNagraj" class="pigulka nagraj" title="Nagrywa gotowy obraz na żywo (R)">Nagrywaj</button>
+          <button id="btnEksport" class="pigulka" hidden title="Przelicza nagranie klatka po klatce, bez gubienia klatek, i zapisuje plik MP4">Eksportuj całe nagranie</button>
+          <button id="btnPelny" class="pigulka" title="Sam obraz na cały ekran (F)">Pełny ekran</button>
+        </div>
+      </header>
+
+      <nav id="zakladki" aria-label="Ustawienia">
+        <button data-zakladka="warstwy"><svg viewBox="0 0 24 24"><path d="M12 3 3 8l9 5 9-5-9-5Zm-9 9 9 5 9-5M3 16l9 5 9-5" /></svg>Warstwy</button>
+        <button data-zakladka="czesci"><svg viewBox="0 0 24 24"><circle cx="12" cy="5" r="2.5" /><path d="M12 8v7m-5-5h10M9 21l3-6 3 6" /></svg>Części ciała</button>
+        <button data-zakladka="odslona"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8" /><path d="M12 4v16" /></svg>Odsłona</button>
+        <button data-zakladka="obraz"><svg viewBox="0 0 24 24"><rect x="3" y="6" width="18" height="12" rx="2" /><circle cx="12" cy="12" r="3" /></svg>Obraz</button>
+        <button data-zakladka="glowa"><svg viewBox="0 0 24 24"><path d="M6 11a6 6 0 1 1 12 0v3a4 4 0 0 1-4 4h-4a4 4 0 0 1-4-4v-3Zm3 0h.01M15 11h.01M10 15h4" /></svg>Głowa</button>
+        <button data-zakladka="zapis"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8" /><circle cx="12" cy="12" r="3.2" /></svg>Zapis</button>
+        <button data-zakladka="kontrola"><svg viewBox="0 0 24 24"><path d="M3 12h4l2-6 4 12 2-6h6" /></svg>Kontrola</button>
+        <span class="rozporka"></span>
+        <button id="btnPanel" title="Chowa albo pokazuje panel ustawień (H)"><svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="16" rx="2" /><path d="M10 4v16" /></svg>Panel</button>
+      </nav>
+
+      <aside id="panel">
+        <section data-panel="warstwy">
+          <h2>Warstwy</h2>
+          <p class="opis">Co ma być widać pod skórą. Klawisze 1 do 7 przełączają kolejne warstwy.</p>
+          <div class="kafle dwa">
+            <label class="kafel"><input type="checkbox" data-warstwa="kosci" /><span><i style="--k: #c9d6e6"></i>Kości</span></label>
+            <label class="kafel"><input type="checkbox" data-warstwa="miesnie" /><span><i style="--k: #e2574c"></i>Mięśnie</span></label>
+            <label class="kafel"><input type="checkbox" data-warstwa="narzady" /><span><i style="--k: #e9a25c"></i>Narządy</span></label>
+            <label class="kafel"><input type="checkbox" data-warstwa="naczynia" /><span><i style="--k: #c22f45"></i>Naczynia</span></label>
+            <label class="kafel"><input type="checkbox" data-warstwa="mozg" /><span><i style="--k: #e77fb4"></i>Mózg</span></label>
+            <label class="kafel"><input type="checkbox" data-warstwa="oczy" /><span><i style="--k: #e3c56a"></i>Oczy</span></label>
+            <label class="kafel"><input type="checkbox" data-warstwa="skora" /><span><i style="--k: #4f8fe8"></i>Obrys ciała</span></label>
+          </div>
+          <h3>Gotowe zestawy</h3>
+          <div class="rzad">
+            <button class="maly" data-zestaw="szkielet">Szkielet</button>
+            <button class="maly" data-zestaw="miesnie">Mięśnie</button>
+            <button class="maly" data-zestaw="narzady">Narządy</button>
+            <button class="maly" data-zestaw="glowa">Mózg</button>
+            <button class="maly" data-zestaw="wszystko">Wszystko</button>
+          </div>
+          <h3>Wygląd</h3>
+          <div class="segment" data-ust="tryb">
+            <button data-wart="rentgen">Rentgen</button>
+            <button data-wart="bryla">Bryła</button>
+          </div>
+          <label class="suwak"><span>Jasność</span><output></output><input type="range" id="jasnosc" min="0.2" max="2.5" step="0.01" /></label>
+          <h3>Podpisy</h3>
+          <label class="przelacz"><input type="checkbox" id="podpisy" data-znacznik="podpisy" /><i></i><span>Pokaż podpisy (P)</span></label>
+          <label class="suwak"><span>Wielkość liter</span><output></output><input type="range" id="wielkoscPodpisow" min="0.7" max="1.6" step="0.05" /></label>
+          <label class="suwak"><span>Najwięcej w kolumnie</span><output></output><input type="range" id="ilePodpisow" min="3" max="24" step="1" /></label>
+        </section>
+
+        <section data-panel="czesci" hidden>
+          <h2>Części ciała</h2>
+          <p class="opis">Kliknij część na sylwetce, żeby oglądać tylko ją. Kolejne kliknięcia dodają albo odejmują następne.</p>
+          <div class="czesci">
+            <div>
+              <svg id="sylwetka" viewBox="0 0 200 310" role="group" aria-label="Części ciała do zaznaczenia">
+                <circle data-czesc="glowa" cx="100" cy="27" r="21" />
+                <rect data-czesc="szyja" x="90" y="47" width="20" height="14" rx="4" />
+                <path data-czesc="klatka" d="M64 62 H136 L130 116 H70 Z" />
+                <path data-czesc="brzuch" d="M70 119 H130 L127 152 H73 Z" />
+                <path data-czesc="miednica" d="M73 155 H127 L132 184 H68 Z" />
+                <rect data-czesc="ramieP" x="42" y="64" width="19" height="58" rx="9" />
+                <rect data-czesc="przedramieP" x="37" y="125" width="17" height="54" rx="8" />
+                <rect data-czesc="dlonP" x="33" y="182" width="19" height="26" rx="8" />
+                <rect data-czesc="ramieL" x="139" y="64" width="19" height="58" rx="9" />
+                <rect data-czesc="przedramieL" x="146" y="125" width="17" height="54" rx="8" />
+                <rect data-czesc="dlonL" x="148" y="182" width="19" height="26" rx="8" />
+                <rect data-czesc="udoP" x="70" y="187" width="27" height="58" rx="11" />
+                <rect data-czesc="golenP" x="73" y="248" width="22" height="44" rx="9" />
+                <rect data-czesc="stopaP" x="66" y="295" width="30" height="11" rx="5" />
+                <rect data-czesc="udoL" x="103" y="187" width="27" height="58" rx="11" />
+                <rect data-czesc="golenL" x="105" y="248" width="22" height="44" rx="9" />
+                <rect data-czesc="stopaL" x="104" y="295" width="30" height="11" rx="5" />
+              </svg>
+              <div class="strony"><span id="stronaLewa"></span><span id="stronaPrawa"></span></div>
+            </div>
+            <div class="kolumna">
+              <button class="maly" data-grupa="cale">Całe ciało</button>
+              <button class="maly" data-grupa="rekaL">Lewa ręka</button>
+              <button class="maly" data-grupa="rekaP">Prawa ręka</button>
+              <button class="maly" data-grupa="tulow">Tułów</button>
+              <button class="maly" data-grupa="nogaL">Lewa noga</button>
+              <button class="maly" data-grupa="nogaP">Prawa noga</button>
+            </div>
+          </div>
+          <p class="opis" id="czesciOpis"></p>
+        </section>
+
+        <section data-panel="odslona" hidden>
+          <h2>Odsłona</h2>
+          <p class="opis">Gdzie anatomia zastępuje prawdziwy obraz.</p>
+          <div class="kafle dwa" data-ust="odslona">
+            <button data-wart="calosc">Całe ciało</button>
+            <button data-wart="soczewka">Soczewka w dłoni</button>
+            <button data-wart="lewa">Lewa połowa</button>
+            <button data-wart="prawa">Prawa połowa</button>
+            <button data-wart="gora">Tylko góra</button>
+            <button data-wart="dol">Tylko dół</button>
+          </div>
+          <label class="suwak" id="wierszCiecia"><span>Pozycja cięcia</span><output></output><input type="range" id="ciecie" min="-1" max="1" step="0.01" /></label>
+          <label class="suwak" id="wierszSoczewki"><span>Rozmiar soczewki przy otwartej dłoni</span><output></output><input type="range" id="soczewka" min="0.05" max="1" step="0.01" /></label>
+          <label class="przelacz" id="wierszGestu"><input type="checkbox" id="gest" data-znacznik="gest" /><i></i><span>Rozmiar gestem: zebrane palce zmniejszają, otwarta dłoń powiększa</span></label>
+          <p class="opis" id="opisSoczewki">Dłoń, która prowadzi soczewkę, jest prześwietlona jak reszta ciała, ale nie ma podpisów. Drugą dłoń z podpisami widać pod soczewką.</p>
+          <h3>Prawdziwy obraz pod anatomią</h3>
+          <label class="suwak"><span>Ile mnie widać</span><output></output><input type="range" id="przenikanie" min="0" max="1" step="0.01" /></label>
+          <label class="suwak"><span>Miękkość krawędzi</span><output></output><input type="range" id="pioro" min="0" max="80" step="1" /></label>
+        </section>
+
+        <section data-panel="obraz" hidden>
+          <h2>Obraz</h2>
+          <label class="przelacz"><input type="checkbox" id="lustro" data-znacznik="lustro" /><i></i><span>Lustro (obraz odbity jak w lusterku)</span></label>
+          <h3>Kadr</h3>
+          <div class="segment" data-ust="kadr">
+            <button data-wart="poziomy">Poziomy 16:9</button>
+            <button data-wart="pionowy">Pionowy 9:16</button>
+          </div>
+          <h3>Rozdzielczość</h3>
+          <div class="segment" data-ust="rozdzielczosc">
+            <button data-wart="1080">1080p</button>
+            <button data-wart="720">720p, szybciej</button>
+          </div>
+          <h3>Wygładzanie ruchu</h3>
+          <div class="segment trzy" data-ust="stabilizacja">
+            <button data-wart="szybka">Bez opóźnienia</button>
+            <button data-wart="zrownowazona">2 klatki</button>
+            <button data-wart="maksymalna">4 klatki</button>
+          </div>
+          <p class="opis">Obraz wychodzi o kilka klatek później, a w zamian anatomia trzyma się ciała bez drgań i bez spóźniania się względem obrazu.</p>
+          <h3>Śledzenie sylwetki</h3>
+          <div class="segment trzy" data-ust="modelSylwetki">
+            <button data-wart="auto">Auto</button>
+            <button data-wart="szybki">Szybki</button>
+            <button data-wart="dokladny">Dokładny</button>
+          </div>
+          <p class="opis">Dokładny model nie gubi rąk i nóg przy szybkim ruchu, ale każdą klatkę liczy dłużej. W trybie Auto pracuje, dopóki komputer nadąża z płynnym obrazem.</p>
+        </section>
+
+        <section data-panel="glowa" hidden>
+          <h2>Dopasowanie głowy</h2>
+          <p class="opis">Gdy czaszka nie leży idealnie na twarzy. Najwygodniej przy wyglądzie „Bryła” i suwaku „Ile mnie widać” ustawionym na połowę.</p>
+          <label class="suwak"><span>Rozmiar</span><output></output><input type="range" data-dop="rozmiar" min="0.8" max="1.3" step="0.005" /></label>
+          <label class="suwak"><span>Szerokość</span><output></output><input type="range" data-dop="szer" min="0.8" max="1.25" step="0.005" /></label>
+          <label class="suwak"><span>Wysokość</span><output></output><input type="range" data-dop="wys" min="0.8" max="1.25" step="0.005" /></label>
+          <label class="suwak"><span>Głębokość</span><output></output><input type="range" data-dop="gleb" min="0.8" max="1.25" step="0.005" /></label>
+          <label class="suwak"><span>Lewo, prawo</span><output></output><input type="range" data-dop="x" min="-30" max="30" step="0.5" /></label>
+          <label class="suwak"><span>Góra, dół</span><output></output><input type="range" data-dop="y" min="-30" max="30" step="0.5" /></label>
+          <label class="suwak"><span>Przód, tył</span><output></output><input type="range" data-dop="z" min="-30" max="30" step="0.5" /></label>
+          <button class="maly" id="zerujDop">Wyzeruj dopasowanie</button>
+        </section>
+
+        <section data-panel="zapis" hidden>
+          <h2>Zapis</h2>
+          <p class="opis">Przyciski „Zdjęcie”, „Nagrywaj” i „Eksportuj całe nagranie” są na górnym pasku. Tutaj ustawia się, jak mają działać.</p>
+          <label class="przelacz"><input type="checkbox" id="dzwiek" data-znacznik="dzwiek" /><i></i><span>Zapisuj z dźwiękiem (mikrofon albo dźwięk nagrania)</span></label>
+          <label class="przelacz"><input type="checkbox" id="odliczanie" data-znacznik="odliczanie" /><i></i><span>Odliczanie 3 sekund przed nagraniem</span></label>
+          <p class="opis">„Nagrywaj” zapisuje to, co widać na żywo. „Eksportuj całe nagranie” pojawia się przy pliku wideo: przelicza film klatka po klatce w 30 kl./s i nie gubi klatek, nawet na wolniejszym komputerze.</p>
+        </section>
+
+        <section data-panel="kontrola" hidden>
+          <h2>Kontrola</h2>
+          <label class="przelacz"><input type="checkbox" id="dane" data-znacznik="dane" /><i></i><span>Pokaż punkty i dane śledzenia</span></label>
+          <pre id="daneTekst" hidden></pre>
+          <h3 hidden>Test kamery</h3>
+          <p class="opis" hidden>Prowadzi głosem przez 17 ruchów i zapisuje surowy obraz z kamery oraz pomiary w folderze projektu, żeby dało się je sprawdzić klatka po klatce.</p>
+          <button class="maly" id="btnTest" hidden>Uruchom test kamery (ok. 3 minut)</button>
+          <h3>Skróty klawiszowe</h3>
+          <dl class="skroty">
+            <dt>Spacja</dt><dd>stopklatka albo pauza</dd>
+            <dt>S</dt><dd>zdjęcie</dd>
+            <dt>R</dt><dd>nagrywanie</dd>
+            <dt>P</dt><dd>podpisy</dd>
+            <dt>F</dt><dd>pełny ekran</dd>
+            <dt>H</dt><dd>schowaj panel</dd>
+            <dt>1 do 7</dt><dd>warstwy</dd>
+          </dl>
+          <h3>Ustawienia</h3>
+          <button class="maly" id="btnReset">Przywróć ustawienia domyślne</button>
+          <p class="opis">Anatomia to prawdziwy model 3D jednej dorosłej osoby, przeskalowany i przypięty do Twojego ciała. Pokazuje, gdzie zwykle leżą struktury. To nie jest skan ani narzędzie medyczne. Obraz przetwarza ten komputer i nic nie jest wysyłane.</p>
+          <p class="opis">Modele anatomiczne: BodyParts3D, © The Database Center for Life Science, licencja CC BY-SA 2.1 Japan.</p>
+        </section>
+      </aside>
+
+      <main id="okno">
+        <div id="ramka">
+          <canvas id="plotno"></canvas>
+          <div id="komunikat" hidden></div>
+          <div id="podpowiedz" hidden>Nie widzę nikogo w kadrze. Stań tak, żeby było widać twarz albo sylwetkę.</div>
+          <div id="licznik" hidden></div>
+          <div id="test" hidden>
+            <div id="testKrok"></div>
+            <div id="testTekst"></div>
+            <div id="testPasek"><i></i></div>
+            <button id="testStop" class="maly">Przerwij test</button>
+          </div>
+          <div id="start">
+            <div class="startKarta">
+              <h1>Zobacz, co masz pod skórą</h1>
+              <p>Stań przed kamerą albo wczytaj nagranie. Na obraz nakłada się szkielet, mięśnie i narządy, które idą za ruchem ciała.</p>
+              <div class="rzad">
+                <button id="startKamera" class="glowny">Włącz kamerę</button>
+                <button id="startPlik" class="drugi">Wczytaj nagranie</button>
+              </div>
+              <button id="startTest" class="lacze" hidden>Test kamery z instrukcjami głosowymi (ok. 3 minut)</button>
+              <p id="stan"></p>
+            </div>
+          </div>
+        </div>
+      </main>
+
+      <footer id="stopka">
+        <span class="lampka" id="stTwarz">twarz</span>
+        <span class="lampka" id="stSylwetka">sylwetka</span>
+        <span class="lampka" id="stDlonie">dłonie</span>
+        <span id="stTempo"></span>
+        <span class="rozporka"></span>
+        <span id="stZrodlo">Brak źródła obrazu</span>
+      </footer>
+    </div>
+    <video id="wideo" playsinline muted hidden></video>
+    <script type="module" src="/src/main.js"></script>
+  </body>
+</html>
